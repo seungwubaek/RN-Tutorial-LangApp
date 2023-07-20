@@ -1,2 +1,5 @@
-# RN-Tutorial-LangApp
-React Native Animation Tutorial을 위한 Language 학습 App 만들기
+# React Native Tutorial - LangApp
+
+노마드 코더스 React Native 마스터클래스 <https://nomadcoders.co/react-native-masterclass>
+
+Second App. **Animations And Interactions**
