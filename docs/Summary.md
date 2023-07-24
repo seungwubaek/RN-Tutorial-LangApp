@@ -1,12 +1,15 @@
 # Stacks
 
 * Animated
+* PanResponder
+* Shadow
 
 # Animated
 
 * `Animated.Value`, `Animated.ValueXY`: 애니메이션에 사용할 변수
   * `addListener`: 변수의 변화 감지 후 액션
   * `interpolate`: interpolation을 통한 변수 변환값 생성
+  * `getTranslateTransform`: `transform`에 사용할 수 있는 값으로 변환
 * `Animated` 액션 함수
   * `timing`: 시간에 따라 애니메이션 적용
   * `spring`: 스프링 애니메이션 적용
@@ -37,10 +40,10 @@ const StView = styled.View``;
 const AniStView = Animated.createAnimatedComponent(StView);
 
 const SomeComponent = () => {
-  const posY = new Animated.Value(0);
+  const position = new Animated.Value(0);
 
   const animationFn = () => {
-    Animated.timing(posY, {
+    Animated.timing(position.y, {
       toValue: 200,
       useNativeDriver: true,
     }).start();
@@ -51,7 +54,7 @@ const SomeComponent = () => {
       <StView>
         <AniStView
           style={{
-            transform: [{ translateY: posY }],
+            transform: [...position.getTranslateTransform()],
           }}
         />
       </StView>
@@ -59,3 +62,41 @@ const SomeComponent = () => {
   );
 };
 ```
+
+# PanResponder
+
+아래처럼 컴포넌트에 제스처 기능을 부여하기위해, `panResponder` 객체의 `panHandlers`를 destructure해서 `View`의 props로 전달
+
+```jsx
+import React, { useRef } from 'react';
+import { View, PanResponder } from 'react-native';
+
+const SomeComponent = () => {
+  const panResponder = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => { ... },
+    onPanResponderMove: () => { ... },
+    ...
+  })).current;
+
+  return <View {...panResponder.panHandlers} />;
+};
+```
+
+* Event Callbacks
+  * `onStartShouldSetPanResponder`: 체스처 감지 on/off
+  * `onPanResponderGrant`: 터치가 시작될 때 호출되는 함수
+  * `onPanResponderMove`: 터치가 움직일 때 호출되는 함수
+  * `onPanResponderRelease`: 터치가 끝날 때 호출되는 함수
+  * `onPanResponderTerminate`: 터치가 취소될 때 호출되는 함수
+  * `onShouldBlockNativeResponder`: 터치가 다른 Component에 의해 차단될 때 호출되는 함수
+
+# Shadow
+
+* Android vs iOS 설정법이 다름
+  * Android: `elevation` 사용
+  * iOS: `box-shadow` (or `shadowColor`, `shadowOffset`, `shadowOpacity`, `shadowRadius`)
+* 두 Platform 간 자동 변환
+  * <https://ethercreative.github.io/react-native-shadow-generator/>
+* 아니면 3rd Party 라이브러리 사용
+  * <https://github.com/SrBrahma/react-native-shadow-2>
