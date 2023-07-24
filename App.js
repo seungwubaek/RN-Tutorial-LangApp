@@ -3,6 +3,8 @@ import { View, Dimensions, Animated, PanResponder } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 
+import icons from './assets/icons';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Styled
@@ -54,65 +56,80 @@ const StViewAniCard = Animated.createAnimatedComponent(StViewCard);
 
 export default function App() {
   // Values
-  const scale = useRef(new Animated.Value(1)).current;
-  const position = useRef(new Animated.ValueXY(0)).current;
+  const frontCardScale = useRef(new Animated.Value(1)).current;
+  const frontCardPosition = useRef(new Animated.ValueXY(0)).current;
   const cardDismissRange = {
     left: (-SCREEN_WIDTH / 2) * 0.8,
     right: (SCREEN_WIDTH / 2) * 0.8,
   };
-  const rotation = position.x.interpolate({
+  const rotation = frontCardPosition.x.interpolate({
     inputRange: [cardDismissRange.left, cardDismissRange.right],
     outputRange: ['-15deg', '15deg'],
   });
-  const secondCardScale = position.x.interpolate({
+  const secondCardScale = frontCardPosition.x.interpolate({
     inputRange: [cardDismissRange.left, 0, cardDismissRange.right],
     outputRange: [1, 0.7, 1],
     extrapolate: 'clamp',
   });
 
   // Animations
-  const onPressIn = Animated.spring(scale, {
+  const decreaseFrontCardScale = Animated.spring(frontCardScale, {
     toValue: 0.9,
     useNativeDriver: true,
   });
 
-  const onPressOut = Animated.spring(scale, {
+  const initFrontCardScale = Animated.spring(frontCardScale, {
     toValue: 1,
     useNativeDriver: true,
   });
 
-  const goCenter = Animated.spring(position, {
+  const goCenter = Animated.spring(frontCardPosition, {
     toValue: 0,
     useNativeDriver: true,
   });
 
-  const goLeft = Animated.spring(position, {
+  const goLeft = Animated.spring(frontCardPosition, {
     toValue: { x: -SCREEN_WIDTH * 1.5, y: 0 },
     tension: 0.5,
     useNativeDriver: true,
+    restDisplacementThreshold: 200,
+    restSpeedThreshold: 200,
   });
 
-  const goRight = Animated.spring(position, {
+  const goRight = Animated.spring(frontCardPosition, {
     toValue: { x: SCREEN_WIDTH * 1.5, y: 0 },
     tension: 0.5,
     useNativeDriver: true,
   });
 
+  const [index, setIndex] = useState(0);
+
+  const onPressedCard = useCallback(() => {
+    frontCardPosition.setValue({ x: 0, y: 0 });
+    decreaseFrontCardScale.start();
+  }, []);
+
+  const onDismissCard = useCallback(() => {
+    setIndex((prev) => prev + 1);
+    frontCardScale.setValue(1);
+    frontCardPosition.setValue({ x: 0, y: 0 });
+  }, []);
+
   const onPressCloseCard = useCallback(() => {
-    Animated.parallel([onPressOut, goLeft]).start();
+    Animated.parallel([initFrontCardScale, goLeft]).start(onDismissCard);
   }, []);
 
   const onPressCheckCard = useCallback(() => {
-    Animated.parallel([onPressOut, goRight]).start();
+    Animated.parallel([initFrontCardScale, goRight]).start(onDismissCard);
   }, []);
 
   // PanResponder
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => onPressIn.start(),
+      onPanResponderGrant: () => onPressedCard(),
       onPanResponderMove: (_, { dx }) => {
-        position.setValue({ x: dx, y: 0 });
+        frontCardPosition.setValue({ x: dx, y: 0 });
       },
       onPanResponderRelease: (_, { dx }) => {
         if (dx < cardDismissRange.left) {
@@ -120,7 +137,7 @@ export default function App() {
         } else if (dx > cardDismissRange.right) {
           onPressCheckCard();
         } else {
-          Animated.parallel([onPressOut, goCenter]).start();
+          Animated.parallel([initFrontCardScale, goCenter]).start();
         }
       },
     })
@@ -129,25 +146,27 @@ export default function App() {
   return (
     <StViewContainer>
       <StViewCardContainer>
+        {/* Second Card */}
         <StViewAniCard
           {...panResponder.panHandlers}
           style={{
             transform: [{ scale: secondCardScale }],
           }}
         >
-          <Ionicons name="beer" size={98} color="#192a56" />
+          <Ionicons name={icons[index + 1]} size={98} color="#192a56" />
         </StViewAniCard>
+        {/* Front Card */}
         <StViewAniCard
           {...panResponder.panHandlers}
           style={{
             transform: [
-              { scale: scale },
-              ...position.getTranslateTransform(),
+              { scale: frontCardScale },
+              ...frontCardPosition.getTranslateTransform(),
               { rotateZ: rotation },
             ],
           }}
         >
-          <Ionicons name="pizza" size={98} color="#192a56" />
+          <Ionicons name={icons[index]} size={98} color="#192a56" />
         </StViewAniCard>
       </StViewCardContainer>
       <StViewCardControlContainer>
