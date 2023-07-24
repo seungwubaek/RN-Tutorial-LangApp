@@ -18,6 +18,13 @@
   * `loop`
 * `Animated` 액션 함수의 옵션
   * `useNativeDriver`: 네이티브 장비의 애니메이션 사용 여부
+* `Animated.spring`의 옵션 <https://reactnative.dev/docs/animated#spring>
+  * `restSpeedThreshold`, `restDisplacementThreshold`
+    * 애니메이션을 정지로 취급하는 조건 설정
+    * 애니메이션 속도(변화하는 초당 픽셀 수)가 특정 값보다 작으면 정지로 취급하며,
+      그 정지취급지점으로부터(?) 특정 거리 이내로 들어오면 정지로 취급한다.
+    * 보통 두 옵션을 함께 사용하는 것으로 추정. 각 옵션을 배타적으로 사용하면 제대로 작동하지 않는다. 다른 하나의 default가 `0.001` 이기 때문일 것으로 추정.
+    * 두 옵션의 의미를 직관적으로 이해하기 어려움.
 
 ### Animated 규칙
 
