@@ -1,4 +1,10 @@
-export default [
+import { Ionicons } from '@expo/vector-icons';
+
+type IoniconType = {
+  name: keyof typeof Ionicons.glyphMap;
+};
+
+const iconNames = [
   'link',
   'search',
   'image',
@@ -841,4 +847,6 @@ export default [
   'wine',
   'wine-outline',
   'woman-outline',
-];
+] as IoniconType['name'][];
+
+export default iconNames;

@@ -6,13 +6,14 @@ declare module 'styled-components/native' {
     headerBackground: string;
     headerText: string;
     tabBarBackground: string;
-    tabBarLabel: string;
+    tabBarLabelTint: string;
     tabBarLabelInactive: string;
-    mainBackground: string;
-    mainText: string;
-    subText: string;
-    testColor1: string;
-    testColor2: string;
-    testColor3: string;
+    // Tab - Card
+    cardMainBackground: string;
+    // Tab - DragDrop
+    dragMainBackground: string;
+    dragMainText: string;
+    dragSubText: string;
+    dragCardBackground: string;
   }
 }

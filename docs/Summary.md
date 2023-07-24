@@ -10,6 +10,8 @@
   * `addListener`: 변수의 변화 감지 후 액션
   * `interpolate`: interpolation을 통한 변수 변환값 생성
   * `getTranslateTransform`: `transform`에 사용할 수 있는 값으로 변환
+  * `setOffset`: 변수의 변화값을 보존
+  * `flattenOffset`: offset을 초기화
 * `Animated` 액션 함수
   * `timing`: 시간에 따라 애니메이션 적용
   * `spring`: 스프링 애니메이션 적용
@@ -69,6 +71,15 @@ const SomeComponent = () => {
   );
 };
 ```
+
+### transform 순서
+
+transform은 순서대로 적용된다(그래서 `Array`). 순서에 유의하자. 보통 `{...position.getTranslateTransform()}`을 먼저 적용한다.
+
+* 예1: `translate`, `rotate`
+  * `rotate`를 먼저하면 회전한 만큼 translate X, Y축이 회전한다.
+* 예2: `translate`, `scale`
+  * `scale`을 먼저하면 scale 값 만큼 translate 변화량이 증가/감소한다.
 
 # PanResponder
 
