@@ -4,6 +4,12 @@
 
 Second App. **Animations And Interactions**
 
-## Branch `card-slider`
+## Navigation Tab 1: Card Slide
 
-![image](https://github.com/seungwubaek/RN-Tutorial-LangApp/assets/22609242/316e8d76-d65e-4568-a1eb-cd9ff932576e)
+![image](https://github.com/seungwubaek/RN-Tutorial-LangApp/assets/22609242/ad90bf68-2192-4ee8-8b62-8e3b312e5772)
+
+## Navigation Tab 2: Drag Drop
+
+![image](https://github.com/seungwubaek/RN-Tutorial-LangApp/assets/22609242/696a02d4-b43c-4422-b77d-f815455bdb42)
+
+## Navigation Tab 3: Challenge
