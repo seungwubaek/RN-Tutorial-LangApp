@@ -26,7 +26,7 @@ Animated를 작동시키기 위해 View의 width, height, x, y 값을 알아내�
 그렇다고 이를 해결하기 위해 PanResponder의 정의할 때 `useRef`로 감싸는 것이 아닌, `useMemo`와 `dependency`를 사용하는 전략을 시도해 볼 수 있겠지만,<br/>
 대개 제스처에 따라서 `dependency`의 내용이 바뀌는 로직이 될 것이므로 PanResponder가 제스처 마다 re-define 되고 제스처 자체가 올바로 작동하지 못하게 된다.
 
-### 해결
+### 해결 1
 
 이 이슈는 PanResponder를 정의할 때 `useRef`를 사용하기 때문에 발생한다.
 
@@ -45,6 +45,43 @@ PanResponder 내부에서는 `setState`를 호출하는 것으로 state 값을 �
 
 이렇게 하면 `onPanResponderRelease`에 의해 state `trigger`가 `true`가 되면서 Release 제스처 로직을 수행할 외부의 `useEffect` 함수가 실행되도록 할 수 있다.
 
+### 해결 2 - 트릭
+
+개발하던 중에 우연히 트릭을 발견했다. state를 아래처럼 쓰면 PanResponder 내부 함수에서도 변경된 state 값을 받아들일 수 있다.
+
+```jsx
+const [trigger, setTrigger] = useState({isOn: false});
+
+const PanResponder = useRef(
+  PanResponder.create({
+    onPanResponderMove: (event, gestureState) => {
+      if(trigger) {
+        console.log('trigger is On')
+      } else {
+        console.log('trigger is Off')
+      }
+    },
+    ...
+  })
+).current;
+
+...
+
+const targetReached = () => {
+  trigger.isOn = true;  // <-- 이 녀석이 트릭
+  setTrigger({ ...trigger });
+};
+```
+
+위 함수에서 주석으로 "이 녀석이 트릭"이라 작성한 부분은 `state` 개념에서 봤을땐 아무 의미가 없다.<br/>
+그러나 `PanResponder` 내부에서는 이 트릭으로 변수의 업데이트 된 값을 받아 올 수 있었다.
+
+아마 이것도 `useRef`를 사용한 까닭일 것이다.<br/>
+`useRef`의 `current` 값은 `onPanResponderMove` 함수는 `setState`가 호출되도 재할당되지 않을 것이다.
+따라서 `onPanResponderMove` 함수 내부의 state 값을 변경하려면 `setState`를 호출하는 것이 아니라 변수값을 직접 변경해야 한다.
+
+단, 외부에서 state 값이 올바로 작동하도록 하기위해 `setState`도 반드시 같이 호출하자.
+
 ## 애니메이션 정지 이슈
 
 질문 워드를 오답 슬롯으로 Drag & Drop 하면,<br/>
@@ -61,3 +98,19 @@ PanResponder 내부에서는 `setState`를 호출하는 것으로 state 값을 �
 * (제스처 n회차) 그이후로도 "오답 Sake Animation"은 정상작동한다.
 
 ### 해결
+
+`Animated.reset()` 함수를 사용한다.<br/>
+<https://reactnative.dev/docs/animated#reset>
+
+* `reset`: Stops any running animation and resets the value to its original.
+
+## TypeError: Cannot read property 'start' of undefined
+
+### 이슈
+
+컴포넌트가 re-render 된 후, 그 전에 한번 호출했던 어떤 `Animated`의 `start` 함수를 호출하면 발생하는 것으로 추정.
+
+### 해결
+
+* 해당 `Animated` 객체의 `start`를 호출하기 전에 `reset`을 호출한다.
+* 해당 `Animated`가 `sequence`, `loop` 등으로 연결된 `Animated.CompositeAnimation`이라면 nested `Animated`들도 `reset` 해야 할 수 있다.
