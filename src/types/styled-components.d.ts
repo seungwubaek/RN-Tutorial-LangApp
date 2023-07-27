@@ -15,5 +15,11 @@ declare module 'styled-components/native' {
     dragMainText: string;
     dragSubText: string;
     dragCardBackground: string;
+    // Tab - Challenge
+    challMainBackground1: string;
+    challMainBackground2: string;
+    challMainBackground3: string;
+    challDragWordSlotHighligher: string;
+    challDragQuestion: string;
   }
 }

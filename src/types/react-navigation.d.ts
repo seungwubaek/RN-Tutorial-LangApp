@@ -11,7 +11,7 @@ export type ScreenCommonParams = {
 export type RootTabParamList = {
   CardSlide: ScreenCommonParams;
   DragDrop: ScreenCommonParams;
-  Challenge: ScreenCommonParams;
+  ChallengeDragNDrop: ScreenCommonParams;
 };
 
 export type TabScreenProps<T extends keyof RootTabParamList> =

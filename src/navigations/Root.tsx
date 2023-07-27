@@ -6,7 +6,7 @@ import { styled, useTheme } from 'styled-components/native';
 // Screens
 import CardSlide from '~/screens/CardSlide/CardSlide';
 import DragDrop from '~/screens/DragDrop/DragDrop';
-import Challenge from '~/screens/Challenge/Challenge';
+import ChallengeDragNDrop from '~/screens/ChallengeDragNDrop';
 
 // Types
 import { RootTabParamList } from '~/types/react-navigation';
@@ -82,10 +82,11 @@ const Root = () => {
         }}
       />
       <Nav.Screen
-        name="Challenge"
-        component={Challenge}
+        name="ChallengeDragNDrop"
+        component={ChallengeDragNDrop}
         initialParams={{ navHeight: NAV_HEIGHT }}
         options={{
+          title: 'Challenge',
           tabBarIcon: ({ color, size }) => {
             return (
               <Ionicons
