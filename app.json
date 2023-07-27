@@ -3,7 +3,6 @@
     "name": "RN-Tutorial-LangApp",
     "slug": "rn-tutorial-langapp",
     "version": "1.0.0",
-    "sdkVersion": "48.0.0",
     "githubUrl": "https://github.com/seungwubaek/RN-Tutorial-LangApp",
     "assetBundlePatterns": ["**/*"],
     "extra": {
@@ -11,7 +10,13 @@
         "projectId": "0539258a-daac-4591-9e87-91ed67827033"
       }
     },
-    "owner": "sammy_baek"
+    "owner": "sammy_baek",
+    "runtimeVersion": "exposdk:48.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/0539258a-daac-4591-9e87-91ed67827033"
+    },
+    "android": {},
+    "ios": {}
   },
   "name": "RN-Tutorial-LangApp"
 }
