@@ -4,10 +4,14 @@ import {
 } from '@react-navigation/bottom-tabs';
 
 // Navigation
+export type ScreenCommonParams = {
+  navHeight?: number;
+};
+
 export type RootTabParamList = {
-  CardSlide: undefined;
-  DragDrop: undefined;
-  Challenge: undefined;
+  CardSlide: ScreenCommonParams;
+  DragDrop: ScreenCommonParams;
+  Challenge: ScreenCommonParams;
 };
 
 export type TabScreenProps<T extends keyof RootTabParamList> =

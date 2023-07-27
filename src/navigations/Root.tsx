@@ -12,7 +12,6 @@ import Challenge from '~/screens/Challenge/Challenge';
 import { RootTabParamList } from '~/types/react-navigation';
 
 // Styles
-
 const StViewDragDropIcons = styled.View`
   flex-direction: row;
 `;
@@ -22,32 +21,44 @@ const Nav = createBottomTabNavigator<RootTabParamList>();
 const Root = () => {
   const theme = useTheme();
 
+  // Values
+  const NAV_HEIGHT = 70;
+
   return (
     <Nav.Navigator
       screenOptions={{
+        unmountOnBlur: true,
         headerShown: false,
         tabBarStyle: {
           backgroundColor: theme.tabBarBackground,
-          height: 60,
+          paddingVertical: 5,
+          height: NAV_HEIGHT,
         },
         tabBarActiveTintColor: theme.tabBarLabelTint,
         tabBarLabelStyle: {
           fontSize: 14,
           fontWeight: '500',
+          paddingBottom: 5,
         },
       }}
     >
       <Nav.Screen
+        name="CardSlide"
+        component={CardSlide}
+        initialParams={{ navHeight: NAV_HEIGHT }}
         options={{
+          title: 'Card Slide',
           tabBarIcon: ({ color, size }) => {
             return <Ionicons name="albums-outline" size={size} color={color} />;
           },
         }}
-        name="CardSlide"
-        component={CardSlide}
       />
       <Nav.Screen
+        name="DragDrop"
+        component={DragDrop}
+        initialParams={{ navHeight: NAV_HEIGHT }}
         options={{
+          title: 'Drag & Drop',
           tabBarActiveBackgroundColor: theme.tabBarBackground,
           tabBarInactiveBackgroundColor: theme.tabBarBackground,
           tabBarIcon: ({ color, size }) => {
@@ -69,10 +80,11 @@ const Root = () => {
             );
           },
         }}
-        name="DragDrop"
-        component={DragDrop}
       />
       <Nav.Screen
+        name="Challenge"
+        component={Challenge}
+        initialParams={{ navHeight: NAV_HEIGHT }}
         options={{
           tabBarIcon: ({ color, size }) => {
             return (
@@ -84,8 +96,6 @@ const Root = () => {
             );
           },
         }}
-        name="Challenge"
-        component={Challenge}
       />
     </Nav.Navigator>
   );
